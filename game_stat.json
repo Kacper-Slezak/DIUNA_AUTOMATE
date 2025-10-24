@@ -1,0 +1,24 @@
+{
+  "round": 10,
+  "currentPlayer": "Peter",
+  "round_history": [
+    {
+      "player": "Helen",
+      "card": "The Gathering Machine",
+      "location": "Hagga Basin",
+      "summary": "Helen played 'The Gathering Machine' on 'Hagga Basin'."
+    },
+    {
+      "player": "Helen",
+      "card": "Diplomacy",
+      "location": "Selective Breeding",
+      "summary": "Helen played 'Diplomacy' on 'Selective Breeding'."
+    }
+  ],
+  "players": {
+    "Peter": { ... },
+    "Helen": { ... },
+    "Paul": { ... }
+  },
+  "locations_state": { ... }
+}

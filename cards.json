@@ -1,0 +1,10 @@
+{
+  "sztylet": {
+    "name": "Sztylet",
+    "agent_symbols": ["fremen", "bene_gesserit", "gildia", "imperium"]
+  },
+  "zwiadowca_pustyni": {
+    "name": "Zwiadowca Pustyni",
+    "agent_symbols": ["fremen"]
+  }
+}
