@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dune: Imperium - Asystent Ruchów</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .message-success { color: green; font-weight: bold; }
+        .message-error { color: red; font-weight: bold; }
+        fieldset { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
+        legend { font-size: 1.2em; font-weight: bold; padding: 0 10px; }
+        select, button { padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        ul { list-style: none; padding-left: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Asystent Ruchów - Dune: Imperium (Runda {{ round_history | length }})</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="message-{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <hr>
+    
+    <h2>Historia Ruchów (Runda Bieżąca)</h2>
+    {% if round_history %}
+        <ul>
+            {% for move in round_history %}
+                <li>{{ move.summary }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>(Brak ruchów w tej rundzie)</p>
+    {% endif %}
+
+    <hr>
+    
+    <form method="POST" action="/">
+        <fieldset>
+            <legend>Rejestracja Nowego Ruchu</legend>
+            
+            <p><label for="player_name">Kto wykonuje ruch?</label>
+                <select id="player_name" name="player_name" required>
+                    <option value="">-- Wybierz Gracza --</option>
+                    {% for name in player_names %}
+                        <option value="{{ name }}" {% if name == current_player %}selected{% endif %}>{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p><label for="card_id">Jakiej karty używa?</label>
+                <select id="card_id" name="card_id" required>
+                    <option value="">-- Wybierz Kartę --</option>
+                    {% for card in cards %}
+                        <option value="{{ card.id }}">{{ card.name }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p><label for="location_id">Na jaką lokację idzie? (Wolne)</label>
+                <select id="location_id" name="location_id" required>
+                    <option value="">-- Wybierz Lokację --</option>
+                    {% for location in locations %}
+                        <option value="{{ location.id }}">{{ location.name }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <button type="submit">Zapisz Ruch</button>
+        </fieldset>
+    </form>
+    
+    <hr>
+    
+    <h2>Zarządzanie Grą</h2>
+    
+    <fieldset>
+        <legend>Asystent AI dla **{{ ai_player_name }}**</legend>
+        <p>Gdy to jest tura Petera, kliknij poniżej, aby wygenerować prompt.</p>
+        <p><a href="{{ url_for('ai_prompt') }}" target="_blank"><button style="background-color: #3f51b5;">Wygeneruj Prompt AI (Otwórz w Nowej Karcie)</button></a></p>
+    </fieldset>
+
+    <fieldset>
+        <legend>Koniec Rundy</legend>
+        <p>Gdy runda się zakończy, użyj poniższego przycisku, aby zwolnić wszystkie lokacje i przejść do kolejnej rundy.</p>
+        <p><a href="{{ url_for('reset_board') }}" onclick="return confirm('Czy na pewno chcesz zresetować planszę i przejść do kolejnej rundy?');"><button style="background-color: #f44336;">Resetuj Planszę/Nowa Runda</button></a></p>
+    </fieldset>
+</body>
+</html>
