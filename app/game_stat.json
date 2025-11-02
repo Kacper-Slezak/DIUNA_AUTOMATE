@@ -1,24 +1,44 @@
 {
-  "round": 10,
+  "round": 11,
   "currentPlayer": "Peter",
-  "round_history": [
-    {
-      "player": "Helen",
-      "card": "The Gathering Machine",
-      "location": "Hagga Basin",
-      "summary": "Helen played 'The Gathering Machine' on 'Hagga Basin'."
-    },
-    {
-      "player": "Helen",
-      "card": "Diplomacy",
-      "location": "Selective Breeding",
-      "summary": "Helen played 'Diplomacy' on 'Selective Breeding'."
-    }
-  ],
+  "round_history": [],
   "players": {
-    "Peter": {},
-    "Helen": {},
-    "Paul": {}
+    "Peter": {
+      "resources": {
+        "solari": 10,
+        "woda": 5,
+        "przyprawa": 2
+      },
+      "deck_pool": [
+        "sztylet",
+        "sztylet",
+        "zwiadowca_pustyni",
+        "dune_the_desert_planet"
+      ]
+    },
+    "Helen": {
+      "resources": {
+        "solari": 5,
+        "woda": 0,
+        "przyprawa": 1
+      },
+      "deck_pool": [
+        "sztylet",
+        "zwiadowca_pustyni",
+        "inna_karta_heleny"
+      ]
+    },
+    "Paul": {
+      "resources": {
+        "solari": 2,
+        "woda": 0,
+        "przyprawa": 4
+      },
+      "deck_pool": [
+        "sztylet",
+        "zwiadowca_pustyni"
+      ]
+    }
   },
   "locations_state": {
     "arrakeen": {

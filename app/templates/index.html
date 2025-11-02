@@ -54,12 +54,9 @@
                 </select>
             </p>
 
-            <p><label for="card_id">Jakiej karty używa?</label>
+            <p><label for="card_id">Jakiej karty używa? (Lista dynamiczna)</label>
                 <select id="card_id" name="card_id" required>
-                    <option value="">-- Wybierz Kartę --</option>
-                    {% for card in cards %}
-                        <option value="{{ card.id }}">{{ card.name }}</option>
-                    {% endfor %}
+                    <option value="">-- Najpierw wybierz gracza --</option>
                 </select>
             </p>
 
@@ -91,5 +88,58 @@
         <p>Gdy runda się zakończy, użyj poniższego przycisku, aby zwolnić wszystkie lokacje i przejść do kolejnej rundy.</p>
         <p><a href="{{ url_for('reset_board') }}" onclick="return confirm('Czy na pewno chcesz zresetować planszę i przejść do kolejnej rundy?');"><button style="background-color: #f44336;">Resetuj Planszę/Nowa Runda</button></a></p>
     </fieldset>
+    
+    
+    <script>
+        // 1. Pobieramy mapę kart przekazaną z Flaska.
+        // Używamy 'tojson' aby bezpiecznie przekonwertować słownik Pythona na obiekt JavaScript.
+        const playerCardMap = {{ player_card_map | tojson }};
+        
+        // 2. Pobieramy elementy DOM (listy rozwijane)
+        const playerDropdown = document.getElementById('player_name');
+        const cardDropdown = document.getElementById('card_id');
+    
+        // 3. Definiujemy funkcję, która zaktualizuje listę kart
+        function updateCardOptions() {
+            // Pobierz aktualnie wybranego gracza
+            const selectedPlayer = playerDropdown.value;
+            
+            // Pobierz listę kart dla tego gracza z naszej mapy
+            // Jeśli gracz nie ma mapy (np. wybrano "-- Wybierz Gracza --"), użyj pustej listy
+            const cardsForPlayer = playerCardMap[selectedPlayer] || [];
+            
+            // Wyczyść stare opcje z listy kart
+            cardDropdown.innerHTML = '';
+            
+            // Stwórz i dodaj domyślną pierwszą opcję
+            let defaultOption = document.createElement('option');
+            defaultOption.value = ""; // Pusta wartość
+            
+            if (selectedPlayer === "") {
+                defaultOption.textContent = "-- Najpierw wybierz gracza --";
+            } else if (cardsForPlayer.length === 0) {
+                defaultOption.textContent = "-- Brak kart dla gracza --";
+            } else {
+                defaultOption.textContent = "-- Wybierz Kartę --";
+            }
+            cardDropdown.appendChild(defaultOption);
+            
+            // Wypełnij listę nowymi kartami
+            cardsForPlayer.forEach(function(card) {
+                let option = document.createElement('option');
+                option.value = card.id;       // np. "sztylet"
+                option.textContent = card.name; // np. "Sztylet"
+                cardDropdown.appendChild(option);
+            });
+        }
+    
+        // 4. Powiąż funkcję 'updateCardOptions' ze zmianą na liście graczy
+        playerDropdown.addEventListener('change', updateCardOptions);
+    
+        // 5. Wywołaj funkcję raz przy załadowaniu strony,
+        // aby wypełnić listę kart dla gracza, który jest domyślnie wybrany
+        updateCardOptions();
+    </script>
+    
 </body>
 </html>

@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import json
 import os
+# import random <-- USUNIĘTE
 
 from game_manager import load_json_file, save_json_file, is_move_valid, process_move
 from build_ai_prompt import generate_ai_prompt, AI_PLAYER_NAME
@@ -31,15 +32,15 @@ def get_available_locations(locations_db, game_state):
     available_locations = []
     
     for loc_id, loc_data in locations_db.items():
-        # Sprawdzenie, czy lokacja jest wolna
         location_state = game_state.get("locations_state", {}).get(loc_id, {})
-        # Zakładamy, że loc_data ma zawsze 'name'
         if location_state.get("occupied_by") is None:
              available_locations.append({
                 "id": loc_id,
                 "name": loc_data["name"]
             })
     return available_locations
+
+# --- FUNKCJA draw_cards_for_ai() ZOSTAŁA USUNIĘTA ---
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -52,15 +53,34 @@ def index():
     current_player = game_state.get("currentPlayer", "Nieznany Gracz")
     round_history = game_state.get("round_history", [])
     player_names = get_player_names(game_state)
-    all_cards = [{'id': k, 'name': v['name']} for k, v in cards_db.items()] #
     available_locations = get_available_locations(locations_db, game_state)
+    
+    # --- UPROSZCZONA LOGIKA MAPY KART ---
+    # Traktuje wszystkich graczy tak samo, pobierając dane z 'deck_pool'
+    player_card_map = {}
+    player_states = game_state.get("players", {})
+    
+    for player_name, player_data in player_states.items():
+        # Używaj 'deck_pool' dla WSZYSTKICH graczy
+        card_ids_list = player_data.get("deck_pool", [])
+        
+        player_card_list = []
+        for card_id in card_ids_list:
+            if card_id in cards_db:
+                player_card_list.append({
+                    "id": card_id,
+                    "name": cards_db[card_id].get("name", card_id)
+                })
+        
+        player_card_map[player_name] = sorted(player_card_list, key=lambda x: x['name'])
+    # --- KONIEC UPROSZCZONEJ LOGIKI ---
+
 
     if request.method == 'POST':
         player_name_input = request.form.get('player_name')
         card_id_input = request.form.get('card_id')
         location_id_input = request.form.get('location_id')
 
-        # Walidacja logiki gry
         is_valid, message = is_move_valid(game_state, locations_db, cards_db, player_name_input, card_id_input, location_id_input)
 
         if is_valid:
@@ -79,7 +99,7 @@ def index():
         current_player=current_player,
         round_history=round_history,
         player_names=player_names,
-        cards=all_cards,
+        player_card_map=player_card_map,
         locations=available_locations,
         ai_player_name=AI_PLAYER_NAME
     )
@@ -104,13 +124,16 @@ def reset_board():
     """Pozwala na reset zajętych lokacji dla nowej rundy."""
     game_state, _, _ = get_game_data()
     if game_state:
+        # 1. Reset lokacji
         if "locations_state" in game_state:
             for loc_id in game_state["locations_state"]:
                 game_state["locations_state"][loc_id]["occupied_by"] = None
         
         game_state["round_history"] = []
-        
         game_state["round"] = game_state.get("round", 0) + 1
+
+        # 2. CAŁA LOGIKA TASOWANIA AI USUNIĘTA
+        # Aplikacja nie musi już tego śledzić.
 
         if save_json_file(GAME_STATE_FILE, game_state):
             flash("Plansza została zresetowana, rozpoczęto nową rundę!", "success")
