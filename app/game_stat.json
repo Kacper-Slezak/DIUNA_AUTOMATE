@@ -1,12 +1,19 @@
 {
-  "round": 11,
+  "round": 0,
   "currentPlayer": "Peter",
-  "round_history": [],
+  "round_history": [
+    {
+      "player": "Peter",
+      "card": "Sztylet",
+      "location": "Carthag",
+      "summary": "Peter played 'Sztylet' on 'Carthag'."
+    }
+  ],
   "players": {
     "Peter": {
       "resources": {
-        "solari": 10,
-        "woda": 5,
+        "solari": 5,
+        "woda": 3,
         "przyprawa": 2
       },
       "deck_pool": [
@@ -45,7 +52,7 @@
       "occupied_by": null
     },
     "carthag": {
-      "occupied_by": null
+      "occupied_by": "Peter"
     },
     "wysoka_rada": {
       "occupied_by": null

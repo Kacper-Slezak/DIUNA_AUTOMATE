@@ -130,7 +130,10 @@ def reset_board():
                 game_state["locations_state"][loc_id]["occupied_by"] = None
         
         game_state["round_history"] = []
-        game_state["round"] = game_state.get("round", 0) + 1
+        if game_state.get("round", 0) >= 10:
+            game_state["round"] = 1
+        else:
+            game_state["round"] = game_state.get("round", 0) + 1
 
         # 2. CAŁA LOGIKA TASOWANIA AI USUNIĘTA
         # Aplikacja nie musi już tego śledzić.
